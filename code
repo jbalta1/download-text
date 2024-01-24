@@ -1,0 +1,96 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #progress-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #progress-bar {
+      width: 300px;
+      height: 20px;
+      border: 1px solid #ccc;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    #progress {
+      height: 100%;
+      background-color: #4caf50;
+      width: 0;
+    }
+
+    #completion-message {
+      display: none;
+      margin-top: 10px;
+      color: #4caf50;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const downloadButton = document.getElementById('download-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progress = document.getElementById('progress');
+      const completionMessage = document.getElementById('completion-message');
+
+      downloadButton.addEventListener('click', function() {
+        downloadButton.disabled = true;
+        progressContainer.style.display = 'flex';
+
+        simulateDownload();
+      });
+
+      function simulateDownload() {
+        let width = 0;
+        const interval = setInterval(function() {
+          if (width >= 100) {
+            clearInterval(interval);
+            downloadButton.style.display = 'none';
+            completionMessage.style.display = 'block';
+            downloadTextDocument();
+          } else {
+            width += 5;
+            progress.style.width = width + '%';
+          }
+        }, 500);
+      }
+
+      function downloadTextDocument() {
+        const textContent = "Your downloaded document";
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'downloaded_document.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    });
+  </script>
+</head>
+<body>
+  <button id="download-btn">Download</button>
+  <div id="progress-container">
+    <div id="progress-bar">
+      <div id="progress"></div>
+    </div>
+    <div id="completion-message">Completed!</div>
+  </div>
+</body>
+</html>
